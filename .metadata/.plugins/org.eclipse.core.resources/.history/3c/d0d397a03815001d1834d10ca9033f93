@@ -1,0 +1,6 @@
+package com.study.apiServer.vo;
+
+@Data
+public class ApiServerTestVO {
+
+}

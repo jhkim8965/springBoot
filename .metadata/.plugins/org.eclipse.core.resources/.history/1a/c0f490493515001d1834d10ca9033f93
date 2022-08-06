@@ -1,0 +1,104 @@
+package com.study.webServer.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.study.webServer.utils.HttpUtil;
+
+import io.swagger.annotations.Api;
+
+@Controller
+@Api(tags = {"WEB_SERVER"})
+public class webController {
+
+	/**
+	 * 함수명: indexPage
+	 * <pre>
+	 * 	WelCome Page 처리
+	 * </pre>
+	 * @return
+	 */
+	@RequestMapping("/")
+	public String indexPage() {
+		
+		return "index";
+	}
+
+	/**
+	 * 함수명: webPage
+	 * <pre>
+	 * 	Main Page 처리
+	 * </pre>
+	 * @return
+	 */
+	@RequestMapping("/webServer")
+	public String webPage() {
+		
+		return "web/main";
+	}
+
+	/**
+	 * 함수명: getWebServerTest
+	 * <pre>
+	 * 	UI -> webServer 응답처리 Sample
+	 * </pre>
+	 * @param param
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping("/webServer/webController/test")
+	public Map<String, String> getWebServerTest(String param) {
+		
+		Map<String, String> rtnParam = new HashMap<>();
+		rtnParam.put("message", param + " <- It's a data you sent to webServer");
+		
+		return rtnParam;
+	}
+
+	/**
+	 * 함수명: getApiServerTest
+	 * <pre>
+	 * 	UI -> webServer -> apiServer 응답처리 Sample
+	 * </pre>
+	 * @param param
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping("/webServer/apiController/test")
+	public Map<String, String> getApiServerTest(String param) {
+		
+		Map<String, String> queryParams = new HashMap<>();
+		queryParams.put("param", param);
+		
+		@SuppressWarnings("unchecked")
+		Map<String, String> response = HttpUtil.get("http://localhost:9010/apiServer/test", queryParams, Map.class);
+		
+		return response;
+	}
+
+	/**
+	 * 함수명: getDbServerTest
+	 * <pre>
+	 * 	UI -> webServer -> dbServer 응답처리 Sample
+	 * </pre>
+	 * @param param
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping("/webServer/dbController/test")
+	public Map<String, String> getDbServerTest(String param) {
+		
+		Map<String, String> queryParams = new HashMap<>();
+		queryParams.put("param", param);
+		
+		@SuppressWarnings("unchecked")
+		Map<String, String> response = HttpUtil.get("http://localhost:9020/dbServer/test", queryParams, Map.class);
+		
+		return response;
+	}
+}

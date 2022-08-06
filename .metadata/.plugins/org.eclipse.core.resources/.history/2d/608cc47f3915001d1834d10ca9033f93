@@ -1,0 +1,11 @@
+package com.study.apiServer.vo;
+
+import lombok.Data;
+
+@Data
+public class WebServerRequestTestVO {
+
+    private String firstSample;
+
+    private String secondSample;
+}

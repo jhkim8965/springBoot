@@ -1,0 +1,12 @@
+package com.study.apiServer.vo;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
+
+@Data
+public class WebServerRequestTestVO {
+
+    @JsonProperty(value = "event_user")
+    private String eventUser;
+}

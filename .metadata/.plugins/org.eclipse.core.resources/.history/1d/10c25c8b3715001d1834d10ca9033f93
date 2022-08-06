@@ -1,0 +1,179 @@
+<configuration>
+	<property name="LOGS_PATH" value="./../logs"/>
+	
+	<springProperty scope="context" name="LOG_LEVEL" source="logging.level.root"/>
+	<springProperty scope="context" name="LOG_LEVEL_OPERATION" source="logging.level.oper"/>
+	<springProperty scope="context" name="LOG_LEVEL_INTERFACE" source="logging.level.inter"/>
+	<springProperty scope="context" name="LOG_LEVEL_ERROR" source="logging.level.error"/>
+	<springProperty scope="context" name="LOG_LEVEL_RESULT" source="logging.level.result"/>
+	
+	<!-- log file path --> 
+	<property name="OPERATION_PATH" value="./../logs/operation"/> 
+	<property name="INTERFACE_PATH" value="./../logs/interface"/> 
+	<property name="RESULT_PATH" value="./../logs/result"/>
+	
+	<!-- log file name -->
+	<property name="OPERATION_NAME" value="operation"/> 
+	<property name="INTERFACE_NAME" value="interface"/>
+	<property name="RESULT_NAME" value="result"/>
+	
+	<!-- err log file path -->
+	<property name="ERROR_PATH" value="../logs/error"/>
+	
+	<!-- err log file name --> 
+	<property name="ERROR_NAME" value="error"/> 
+	
+	<property name="FILE_DATE" value="%d{yyyy-MM-dd}_%i"/>
+	
+	<!-- pattern --> 
+	<property name="LOG_PATTERN" value="[%-5level] %d{yy-MM-dd HH:mm:ss}[%thread] [%logger{0}:%line] - %msg%n"/> 
+
+	<!-- interface 데이터 인아웃 --> 
+	<appender name="OPERATION" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- <file>${OPERATION_PATH}/${OPERATION_NAME}-${FILE_DATE}.log</file> --> 
+		<!-- 출력패턴 설정--> 
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<charset>UTF-8</charset> 
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+		<!-- Rolling 정책 --> 
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"> 
+			<!-- .gz,.zip 등을 넣으면 자동 일자별 로그파일 압축 --> 
+			<fileNamePattern>${OPERATION_PATH}/${OPERATION_NAME}-%d{yyyy-MM-dd}_%i.log</fileNamePattern> 
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP"> 
+				<!-- 파일당 최고 용량 kb, mb, gb --> 
+				<maxFileSize>1GB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy> 
+			<!-- 일자별 로그파일 최대 보관주기(~일), 해당 설정일 이상된 파일은 자동으로 제거--> 
+			<maxHistory>1</maxHistory> 
+			<!--<MinIndex>1</MinIndex> <MaxIndex>10</MaxIndex>--> 
+		</rollingPolicy> 
+	</appender> 
+	
+	<!-- interface 데이터 인아웃 --> 
+	<appender name="INTERFACE" class="ch.qos.logback.core.rolling.RollingFileAppender"> 
+		<!-- 출력패턴 설정--> 
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<charset>UTF-8</charset> 
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+		<!-- Rolling 정책 --> 
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"> 
+			<!-- .gz,.zip 등을 넣으면 자동 일자별 로그파일 압축 --> 
+			<fileNamePattern>${INTERFACE_PATH}/${INTERFACE_NAME}-%d{yyyy-MM-dd}_%i.log</fileNamePattern> 
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP"> 
+				<!-- 파일당 최고 용량 kb, mb, gb --> 
+				<maxFileSize>1GB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy> 
+			<!-- 일자별 로그파일 최대 보관주기(~일), 해당 설정일 이상된 파일은 자동으로 제거--> 
+			<maxHistory>30</maxHistory> 
+			<!--<MinIndex>1</MinIndex> <MaxIndex>10</MaxIndex>--> 
+		</rollingPolicy> 
+	</appender> 
+	
+	<!-- result mainkey/검사점수/금지어/총점/받고/보내는 걸린 시간 --> 
+	<appender name="RESULT" class="ch.qos.logback.core.rolling.RollingFileAppender"> 
+		<!-- 출력패턴 설정--> 
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<charset>UTF-8</charset> 
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+		<!-- Rolling 정책 --> 
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"> 
+			<!-- .gz,.zip 등을 넣으면 자동 일자별 로그파일 압축 --> 
+			<fileNamePattern>${RESULT_PATH}/${RESULT_NAME}-%d{yyyy-MM-dd}_%i.log</fileNamePattern> 
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP"> 
+				<!-- 파일당 최고 용량 kb, mb, gb --> 
+				<maxFileSize>1GB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy> 
+			<!-- 일자별 로그파일 최대 보관주기(~일), 해당 설정일 이상된 파일은 자동으로 제거--> 
+			<maxHistory>30</maxHistory> 
+			<!--<MinIndex>1</MinIndex> <MaxIndex>10</MaxIndex>--> 
+		</rollingPolicy> 
+	</appender> 
+	
+	<!-- 에러의 경우 파일에 로그 처리 --> 
+	<appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender"> 
+		<filter class="ch.qos.logback.classic.filter.LevelFilter"> 
+			<level>error</level> 
+			<onMatch>ACCEPT</onMatch> 
+			<onMismatch>DENY</onMismatch> 
+		</filter> 
+		<!-- <file>${LOG_ERROR_PATH}/${ERR_LOG_FILE_NAME}.log</file> --> 
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${LOG_PATTERN}</pattern> 
+		</encoder> 
+		<!-- Rolling 정책 --> 
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"> 
+			<!-- .gz,.zip 등을 넣으면 자동 일자별 로그파일 압축 --> 
+			<fileNamePattern>${ERROR_PATH}/${ERROR_NAME}-%d{yyyy-MM-dd}_%i.log</fileNamePattern> 
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP"> 
+				<!-- 파일당 최고 용량 kb, mb, gb --> 
+				<maxFileSize>1GB</maxFileSize>
+				<!-- <maxFileSize>10MB</maxFileSize> --> 
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<!-- 일자별 로그파일 최대 보관주기(~일), 해당 설정일 이상된 파일은 자동으로 제거--> 
+			<maxHistory>60</maxHistory>
+		</rollingPolicy> 
+	</appender>
+
+	<appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <fileNamePattern>${LOGS_PATH}/logback-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- or whenever the file size reaches 100MB -->
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d{HH:mm:ss.SSS} [%-5level] - %msg%n</Pattern>
+        </layout>
+    </appender>
+  
+	  <!-- Loggers -->
+	  <logger name="jdbc" level="OFF"/>
+	  
+	  <!-- 
+	  <logger name="jdbc.sqlonly" level="OFF"/>
+	  <logger name="jdbc.sqltiming" level="OFF"/>
+	  <logger name="jdbc.audit" level="OFF"/>
+	  <logger name="jdbc.resultset" level="OFF"/>
+	  <logger name="jdbc.resultsettable" level="OFF"/>
+	  <logger name="jdbc.connection" level="OFF"/> 
+	  -->
+	  
+	  <logger name="jdbc.sqlonly" level="DEBUG"/>
+	  <logger name="jdbc.sqltiming" level="DEBUG"/>
+	  <logger name="jdbc.audit" level="OFF"/>
+	  <logger name="jdbc.resultset" level="OFF"/>
+	  <logger name="jdbc.resultsettable" level="DEBUG"/>
+	  <logger name="jdbc.connection" level="OFF"/> 
+	  
+  	<root level="INFO">
+  		<appender-ref ref="ROLLING"/>
+    	<appender-ref ref="STDOUT" />
+  	</root>
+  
+  	<root level="${LOG_LEVEL_OPERATION}">
+		<appender-ref ref="OPERATION"/>
+	</root>
+	
+	<!-- 데이터 인아웃 -->
+	<logger name="com.diquest.log.inter" level="${LOG_LEVEL_INTERFACE}" additivity="false">
+		<appender-ref ref="INTERFACE"/>
+	</logger>
+	
+	<!-- 검사결과 -->
+	<logger name="com.diquest.log.result" level="${LOG_LEVEL_RESULT}" additivity="false">
+		<appender-ref ref="RESULT"/>
+	</logger>
+	
+	
+  
+</configuration>

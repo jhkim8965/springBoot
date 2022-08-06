@@ -1,0 +1,50 @@
+package com.study.webServer.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.study.webServer.utils.HttpUtil;
+
+@Controller
+public class webController {
+
+	@RequestMapping("/")
+	public String indexPage() {
+		
+		return "index";
+	}
+
+	@RequestMapping("/web")
+	public String webPage() {
+		
+		return "/web/main.jsp";
+	}
+
+	@ResponseBody
+	@GetMapping("/web/frontController/test")
+	public Map<String, String> getFrontTest(String param) {
+		
+		Map<String, String> rtnParam = new HashMap<>();
+		rtnParam.put("message", param + " <- It's a data you sent to front");
+		
+		return rtnParam;
+	}
+
+	@ResponseBody
+	@GetMapping("/jhkim/backController/test")
+	public Map<String, String> getBackTest(String param) {
+		
+		Map<String, String> params = new HashMap<>();
+		params.put("param", param);
+		
+		@SuppressWarnings("unchecked")
+		Map<String, String> rtnParam = HttpUtil.get("http://localhost:8030/front/test", params, Map.class);
+		
+		return rtnParam;
+	}
+}

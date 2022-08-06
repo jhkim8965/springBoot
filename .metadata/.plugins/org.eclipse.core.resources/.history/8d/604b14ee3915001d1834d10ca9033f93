@@ -1,0 +1,9 @@
+package com.study.webServer.vo;
+
+import lombok.Data;
+
+@Data
+public class ResponseTestToWebServerVO {
+
+    private String firstSample;
+}

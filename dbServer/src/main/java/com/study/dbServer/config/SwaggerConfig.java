@@ -1,0 +1,54 @@
+package com.study.dbServer.config;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.Tag;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+@RequiredArgsConstructor
+@Configuration
+@EnableSwagger2
+public class SwaggerConfig {
+
+    public static final String GROUP_NAME = "FINAL_DB";
+    public static final String BASE_PACKAGE = "com.study.dbServer";
+
+    public final Environment env;
+
+    @Bean
+    public Docket taInterfaceApiDocket() {
+
+        Docket docket = new Docket(DocumentationType.SWAGGER_2);
+
+        // group name
+        docket.groupName(GROUP_NAME);
+
+        // API info
+        docket.apiInfo(new ApiInfoBuilder()
+                .title(GROUP_NAME)
+                .version("1.0.0")
+                .build());
+
+        // api 태그 정보
+        int sortNum = 0;
+        docket.tags(
+                new Tag("DB_SERVER", "DB SERVER 연동", ++sortNum)
+        );
+
+        // api 패키지 경로 설정
+        docket.select()
+                .apis(RequestHandlerSelectors.basePackage(BASE_PACKAGE))
+                .paths(PathSelectors.any())
+                .build();
+
+        return docket;
+    }
+
+}

@@ -1,0 +1,30 @@
+package com.study.dbServer.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("dbServer")
+public class dbController {
+
+	/**
+	 * 함수명: getTest
+	 * <pre>
+	 * 	dbServer 응답처리 Sample
+	 * </pre>
+	 * @param param
+	 * @return
+	 */
+	@GetMapping("test")
+	public Map<String, String> getTest(String param) {
+		
+		Map<String, String> rtnParam = new HashMap<>();
+		rtnParam.put("message", param + " <- Is it a data you sent to dbServer??");
+		
+		return rtnParam;
+	}
+}

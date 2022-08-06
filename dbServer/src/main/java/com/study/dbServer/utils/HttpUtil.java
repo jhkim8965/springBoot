@@ -1,0 +1,83 @@
+package com.study.dbServer.utils;
+
+import java.time.Duration;
+import java.util.Map;
+
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
+import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
+public class HttpUtil {
+	
+	private static RestTemplate restTemplate = new RestTemplateBuilder()
+			.setConnectTimeout(Duration.ofSeconds(10))
+			.setReadTimeout(Duration.ofSeconds(10))
+			.build();
+
+    private HttpUtil() {}
+    
+	@SneakyThrows
+	public static <T> T post(String url, Object bodyData, Class<T> clazz) {
+		
+		log.info(">>># HttpUtils.post()");
+		log.info("url: " + url);
+		log.info("data: " + CommonUtil.objectToJson(bodyData));
+		
+		String body = CommonUtil.objectToJson(bodyData);
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<Object> request = new HttpEntity<>(body, headers);
+
+		return restTemplate.postForObject(url, request, clazz);
+	}
+    
+	@SneakyThrows
+	public static <T> T get(String baseUrl, Map<String, String> queryParams, Class<T> clazz) {
+		
+		log.info(">>># HttpUtils.get()");
+		
+		String queryParameters = "?";
+		for(String key : queryParams.keySet()) {
+			queryParameters += key + "=" + queryParams.get(key) + "&";
+		}
+		queryParameters = queryParameters.substring(0, queryParameters.length() - 1);
+		
+		String url = baseUrl + queryParameters;
+		log.info("url: " + url);
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<Object> request = new HttpEntity<>(headers);
+
+		ResponseEntity<T> response = restTemplate.exchange(url, HttpMethod.GET, request, clazz);
+
+		return response.getBody();
+	}
+    
+	@SneakyThrows
+	public static <T> T delete(String url, Object bodyData, Class<T> clazz) {
+
+		log.info(">>># HttpUtils.delete()");
+		log.info("url: " + url);
+		log.info("data: " + CommonUtil.objectToJson(bodyData));
+		
+		String body = CommonUtil.objectToJson(bodyData);
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<Object> request = new HttpEntity<>(body, headers);
+
+		ResponseEntity<T> response = restTemplate.exchange(url, HttpMethod.DELETE, request, clazz);
+
+		return response.getBody();
+	}
+}

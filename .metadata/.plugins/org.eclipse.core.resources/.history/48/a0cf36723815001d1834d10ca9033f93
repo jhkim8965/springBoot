@@ -1,0 +1,126 @@
+package com.study.webServer.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.study.webServer.utils.HttpUtil;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.log4j.Log4j2;
+import springfox.documentation.annotations.ApiIgnore;
+
+@Controller
+@Log4j2
+@Api(tags = {"WEB_SERVER"})
+public class webController {
+
+	/**
+	 * 함수명: indexPage
+	 * <pre>
+	 * 	WelCome Page 처리
+	 * </pre>
+	 * @return
+	 */
+	@ApiIgnore
+	@RequestMapping("/")
+	public String indexPage() {
+
+        log.info("===========>>># webController.indexPage()");
+        
+		return "index";
+	}
+
+	/**
+	 * 함수명: webPage
+	 * <pre>
+	 * 	Main Page 처리
+	 * </pre>
+	 * @return
+	 */
+	@ApiIgnore
+	@RequestMapping("/webServer")
+	public String webPage() {
+
+        log.info("===========>>># webController.webPage()");
+		
+		return "web/main";
+	}
+
+	/**
+	 * 함수명: getWebServerTest
+	 * <pre>
+	 * 	UI -> webServer 응답처리 Sample
+	 * </pre>
+	 * @param param
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping("/webServer/test")
+    @ApiOperation("WebServer - 자체응답 TEST (GET방식)")
+	public Map<String, String> getWebServerTest(String param) {
+
+        log.info("===========>>># webController.getWebServerTest()");
+        log.info(">>># param: " + param);
+		
+		Map<String, String> rtnParam = new HashMap<>();
+		rtnParam.put("message", param + " <- It's a data you sent to webServer");
+		
+		return rtnParam;
+	}
+
+	/**
+	 * 함수명: getApiServerTest
+	 * <pre>
+	 * 	UI -> webServer -> apiServer 응답처리 Sample
+	 * </pre>
+	 * @param param
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping("/webServer/api/test")
+    @ApiOperation("WebServer - ApiServer 요청 TEST (GET방식)")
+	public Map<String, String> getApiServerTest(String param) {
+
+        log.info("===========>>># webController.getApiServerTest()");
+        log.info(">>># param: " + param);
+		
+		Map<String, String> queryParams = new HashMap<>();
+		queryParams.put("param", param);
+		
+		@SuppressWarnings("unchecked")
+		Map<String, String> response = HttpUtil.get("http://localhost:9010/apiServer/test", queryParams, Map.class);
+		
+		return response;
+	}
+
+	/**
+	 * 함수명: getDbServerTest
+	 * <pre>
+	 * 	UI -> webServer -> dbServer 응답처리 Sample
+	 * </pre>
+	 * @param param
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping("/webServer/db/test")
+    @ApiOperation("WebServer - DbServer 요청 TEST (GET방식)")
+	public Map<String, String> getDbServerTest(String param) {
+
+        log.info("===========>>># webController.getDbServerTest()");
+        log.info(">>># param: " + param);
+		
+		Map<String, String> queryParams = new HashMap<>();
+		queryParams.put("param", param);
+		
+		@SuppressWarnings("unchecked")
+		Map<String, String> response = HttpUtil.get("http://localhost:9020/dbServer/test", queryParams, Map.class);
+		
+		return response;
+	}
+}
